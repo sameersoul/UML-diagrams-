@@ -1,46 +1,33 @@
 # UML-diagram
 ```mermaid
-%% Define swimlanes and title
----
-title: Activity Diagram for Rescue Seeker and Women Leader
----
-flowchart TD
-    subgraph RescueSeeker[Rescue Seeker]
-        direction TB
-        A1(Start):::startEnd --> B1(AI Face Detection):::process
-        B1 -->|Female| B2(Sign-up):::process
-        B1 -->|Male| B3(Not Allowed to Sign-up):::process
-        B2 --> B4(Email/Phone Verification):::process
-        B4 --> B5(Set Password):::process
-        B5 --> B6(Login):::process
-        B6 --> B7(View List of Women Leaders):::process
-        B7 --> B8(Turn on Panic Mode):::process
-        B8 --> B9(Send Geo-location to Women Leader):::process
-        B9 -->|Fork| B10(Record Video/Audio/Send Text):::process
-        B10 --> B11{Help Received?}:::decision
-        B11 -->|Yes| B12(Turn off Panic Mode):::process
-        B12 --> A2(End):::startEnd
-    end
-    
-    subgraph WomenLeader[Women Leader]
-        direction TB
-        C1(Start):::startEnd --> C2(View List of Rescue Seekers):::process
-        B9 --> C3(Receive Panic Alert and Geo-location):::process
-        C3 --> C4(Display Countdown Timer):::process
-        C4 --> C5(Notification Section):::process
-        C5 --> C6(Provide Assistance):::process
-        C6 --> C7(Help Received Confirmation):::process
-        C7 --> C8(End):::startEnd
-    end
+sequenceDiagram
+    autonumber
+    participant Admin as Women Leader (Admin)
+    participant App as Community Tab
+    participant System as System
+    participant Seeker as Rescue Seeker
 
-    %% Define Classes
-    classDef startEnd fill:#32CD32,stroke:#333,stroke-width:2px,shape:circle;
-    classDef process fill:#FFD700,stroke:#333,stroke-width:2px;
-    classDef decision fill:#FF4500,stroke:#333,stroke-width:2px,shape:diamond;
-    classDef user1 fill:#FFDDC1,stroke:#333,stroke-width:2px;
-    classDef user2 fill:#C1E1FF,stroke:#333,stroke-width:2px;
+    Admin->>System: Login with credentials
+    System-->>Admin: Land on home page
+    System-->>Admin: Display list of nearby women leaders
 
-    %% Link Swimlanes
-    B8 -.-> C3
-    B9 -.-> C3
-    C7 --> B11
+    Admin->>App: Click on community tab
+    Admin->>App: Click on create group icon
+    Admin->>App: Enter group details
+    Admin->>App: Click on create group
+    App-->>System: Create group
+    System-->>Admin: Group created
+    System-->>Seeker: Group reflected in community tab
+
+    Seeker->>System: Login into the app
+    Seeker->>App: Click on community tab
+    Seeker->>App: Select group to join
+    Seeker->>App: Click on join button
+    App-->>System: Send join request to admin
+    System-->>Admin: Notify of join request
+
+    Admin->>App: Accept join request
+    App-->>System: Accept join request
+    System-->>Seeker: Notify of admin acceptance
+
+    Seeker->>App: View announcements in the group
